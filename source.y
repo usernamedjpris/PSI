@@ -138,7 +138,7 @@
 
 
     int trouve(char* nvNom) {
-        affiche();
+        //affiche();
         int compteur = 0;
         int arg = -1;
         Cellule* actuelle = tabSymbol->premiere;
@@ -257,7 +257,7 @@
 
 %}
 %union        {int nb; char var [32];};
-%token        tMAIN tFIN tCONST tVOID tINT tCHAR tFLOAT tPRINTF tEQ tADD tSUB tMUL tDIV tVIRG tPTvirg tPARo tPARf tACCo tACCf tNULL tREAL tEXPO tNOM
+%token        tMAIN tFIN tCONST tVOID tINT tCHAR tFLOAT tPRINTF tEQ tADD tSUB tMUL tDIV tVIRG tPTvirg tPARo tPARf tACCo tACCf tNULL tREAL tEXPO tNOM tVIRGULE
 %token        <nb>  tNB tEXPO
 %token        <var> tVAR
 %type         <nb> EXPRESSION OPE DECLARATION VAL INSTRUCT LVAR LVARS DVAR DVARS
@@ -291,6 +291,18 @@ DECLARATION:
     |   TYPE tVAR tPTvirg DECLARATION            { ajoute($2,0); }
     |   tCONST TYPE tVAR tPTvirg DECLARATION     { ajoute($3,1); }
     |   TYPE tVAR tEQ VAL tPTvirg DECLARATION    { ajoute($2,0); write_instruction2(COD_AFC,trouve($2),$4); }
+    |   TYPE tVAR tVIRGULE VARSUIV DECLARATION   { ajoute($2,0); }
+    |   tCONST TYPE tVAR tVIRGULE CONSTVARSUIV DECLARATION  { ajoute($3,1); }
+    ;
+
+VARSUIV:
+      tVAR tVIRGULE VARSUIV { ajoute($1,0); }
+    | tVAR tPTvirg { ajoute($1,0); }
+    ;
+
+CONSTVARSUIV:
+      tVAR tVIRGULE CONSTVARSUIV { ajoute($1,1); }
+    | tVAR tPTvirg { ajoute($1,1); }
     ;
   //  |    ASSIGNATION DECLARATION
   //  ;
@@ -319,7 +331,6 @@ DVARS:
 INSTRUCT:
 
     |   tVAR tEQ EXPRESSION tPTvirg INSTRUCT             { if(!constante($1)){write_instruction2(COD_COP,trouve($1),$3); depile_tmp();}  } /*si constante on change pas*/
-    |   tPRINTF tPARo EXPRESSION tPARf tPTvirg INSTRUCT
     |   PRINT INSTRUCT
     ;
 

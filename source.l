@@ -27,5 +27,7 @@
 "{"                                      		                      {printf("tACCo");return(tACCo);}
 "}"                                      		                      {printf("ACCf");return(tACCf);}
 "NULL"                                   		                      {printf("tNULL"); return(tNULL);}
+","                                                                   {return(tVIRGULE);}
 ([a-zA-Z]|_)(([0-9]|[a-zA-Z])|_)*                                 {strcpy(yylval.var,yytext) ; printf("(tVAR)%s\n\n\n\n\n",yylval.var); return(tVAR);}
+
 %%
